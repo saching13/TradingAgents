@@ -5,4 +5,9 @@ Kronos is not distributed as an installable package (no pyproject.toml/
 setup.py upstream), so the two self-contained model files are vendored
 here directly rather than depended on via git submodule or pip.
 
-No modifications have been made to kronos.py or module.py.
+One import in kronos.py has been adjusted for the vendored package layout:
+upstream's `sys.path.append("../"); from model.module import *` (which
+assumed a top-level `model` package matching upstream's own directory name)
+is changed to `from .module import *` (a relative import within this
+vendored package). No other changes have been made to kronos.py or
+module.py.
