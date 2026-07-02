@@ -20,6 +20,7 @@ from tradingagents.agents.utils.agent_utils import (
     get_income_statement,
     get_indicators,
     get_insider_transactions,
+    get_kronos_forecast,
     get_macro_indicators,
     get_news,
     get_prediction_markets,
@@ -48,7 +49,7 @@ class TradingAgentsGraph:
 
     def __init__(
         self,
-        selected_analysts=("market", "social", "news", "fundamentals"),
+        selected_analysts=("market", "social", "news", "fundamentals", "quant"),
         debug=False,
         config: dict[str, Any] = None,
         callbacks: list | None = None,
@@ -196,6 +197,11 @@ class TradingAgentsGraph:
                     get_balance_sheet,
                     get_cashflow,
                     get_income_statement,
+                ]
+            ),
+            "quant": ToolNode(
+                [
+                    get_kronos_forecast,
                 ]
             ),
         }
@@ -425,6 +431,7 @@ class TradingAgentsGraph:
             "sentiment_report": final_state["sentiment_report"],
             "news_report": final_state["news_report"],
             "fundamentals_report": final_state["fundamentals_report"],
+            "quant_report": final_state["quant_report"],
             "investment_debate_state": {
                 "bull_history": final_state["investment_debate_state"]["bull_history"],
                 "bear_history": final_state["investment_debate_state"]["bear_history"],
