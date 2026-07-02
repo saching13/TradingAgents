@@ -184,10 +184,16 @@ You will see a screen where you can select your desired tickers, analysis date, 
 
 Run the API server instead of the interactive CLI:
 ```bash
-tradingagents api --host 0.0.0.0 --port 8080
+tradingagents api --port 8080
 # or via Docker:
 docker compose up tradingagents-api
 ```
+
+By default the API binds to `127.0.0.1` (loopback-only) since it has no
+authentication — anyone who can reach it can trigger paid LLM calls and GPU
+work. Pass `--host 0.0.0.0` (bare-metal) or edit the `ports:` mapping in
+`docker-compose.yml` if you want LAN/remote access, and put it behind your
+own auth/network boundary if you do.
 
 Submit an analysis and poll for the result:
 ```bash
@@ -196,8 +202,13 @@ curl -X POST http://localhost:8080/analyze -H "Content-Type: application/json" \
 # => {"job_id": "..."}
 
 curl http://localhost:8080/analyze/<job_id>
-# => {"status": "running", "reports_completed": 2, "reports_total": 5, ...}
+# => {"status": "running", "reports_completed": 0, "reports_total": 5, ...}
 ```
+
+Progress reporting is currently binary, not incremental: `reports_completed`
+stays `0` for the entire run and jumps to the final count only once
+`status` becomes `"done"` (or `"error"`). There is no partial/in-progress
+count.
 
 ### Markets and tickers
 

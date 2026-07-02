@@ -1352,7 +1352,15 @@ def analyze(
 
 @app.command()
 def api(
-    host: str = typer.Option("0.0.0.0", "--host", help="Bind host for the HTTP API."),
+    host: str = typer.Option(
+        "127.0.0.1",
+        "--host",
+        help=(
+            "Bind host for the HTTP API. Defaults to loopback-only since the "
+            "API has no authentication; pass --host 0.0.0.0 (behind your own "
+            "auth/network boundary) to expose it more broadly."
+        ),
+    ),
     port: int = typer.Option(8080, "--port", help="Bind port for the HTTP API."),
 ):
     """Run the TradingAgents HTTP API server (uvicorn)."""
