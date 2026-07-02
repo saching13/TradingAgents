@@ -1,0 +1,8 @@
+This directory vendors kronos.py and module.py verbatim from:
+https://github.com/shiyu-coder/Kronos (MIT License, Copyright (c) 2025 ShiYu)
+
+Kronos is not distributed as an installable package (no pyproject.toml/
+setup.py upstream), so the two self-contained model files are vendored
+here directly rather than depended on via git submodule or pip.
+
+No modifications have been made to kronos.py or module.py.
