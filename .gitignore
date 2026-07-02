@@ -221,3 +221,6 @@ __marimo__/
 # Enterprise env file (secrets) and generated run reports
 .env.enterprise
 reports/
+
+# Subagent-driven-development scratch (progress ledger, task briefs/reports)
+.superpowers/
