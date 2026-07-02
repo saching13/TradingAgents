@@ -3,10 +3,37 @@ services:
     build: .
     env_file:
       - .env
+    command: ["analyze"]
     volumes:
       - tradingagents_data:/home/appuser/.tradingagents
+      - huggingface_cache:/home/appuser/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     tty: true
     stdin_open: true
+
+  tradingagents-api:
+    build: .
+    env_file:
+      - .env
+    command: ["api", "--host", "0.0.0.0", "--port", "8080"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - tradingagents_data:/home/appuser/.tradingagents
+      - huggingface_cache:/home/appuser/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   ollama:
     image: ollama/ollama:latest
@@ -21,6 +48,7 @@ services:
       - .env
     environment:
       - LLM_PROVIDER=ollama
+    command: ["analyze"]
     volumes:
       - tradingagents_data:/home/appuser/.tradingagents
     depends_on:
@@ -33,3 +61,4 @@ services:
 volumes:
   tradingagents_data:
   ollama_data:
+  huggingface_cache:
