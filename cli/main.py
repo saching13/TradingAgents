@@ -1350,5 +1350,16 @@ def analyze(
     run_analysis(checkpoint=checkpoint)
 
 
+@app.command()
+def api(
+    host: str = typer.Option("0.0.0.0", "--host", help="Bind host for the HTTP API."),
+    port: int = typer.Option(8080, "--port", help="Bind port for the HTTP API."),
+):
+    """Run the TradingAgents HTTP API server (uvicorn)."""
+    import uvicorn
+
+    uvicorn.run("tradingagents.api.server:app", host=host, port=port)
+
+
 if __name__ == "__main__":
     app()
