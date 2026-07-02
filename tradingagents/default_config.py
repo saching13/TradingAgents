@@ -132,4 +132,18 @@ DEFAULT_CONFIG = _apply_env_overrides({
         ".SZ":  "399001.SZ",   # Shenzhen (SZSE Component)
         "":     "SPY",         # default for US-listed tickers (no suffix)
     },
+    # Kronos quant forecast (Quant Forecast Analyst). Kronos is an
+    # autoregressive K-line foundation model (github.com/shiyu-coder/Kronos);
+    # "small" balances quality/speed for a daily-cadence pipeline.
+    "kronos_forecast": {
+        "enabled": True,
+        "model": "NeoQuasar/Kronos-small",
+        "tokenizer": "NeoQuasar/Kronos-Tokenizer-base",
+        "device": "auto",       # "auto" picks cuda if available else cpu
+        "lookback": 400,
+        "pred_len": 5,          # trading days ahead
+        "temperature": 1.0,
+        "top_p": 0.9,
+        "sample_count": 1,
+    },
 })
