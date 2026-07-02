@@ -52,33 +52,70 @@ Stop polling when `status` is `"done"` (success) or `"error"` (failure — repor
 
 **5. Save the report**
 
-When "Save report? [Y]:" appears:
-```bash
-tmux send-keys -t ta_run "Y" Enter
-tmux send-keys -t ta_run "" Enter   # accept default save path
+Once Step 4's polling shows `status == "done"`, the final `GET /analyze/{JOB_ID}` response body already contains everything needed — no further request is required. Its shape:
+
+```json
+{
+  "status": "done",
+  "reports": {
+    "market_report": "...",
+    "sentiment_report": "...",
+    "news_report": "...",
+    "fundamentals_report": "...",
+    "quant_report": "..."
+  },
+  "reports_completed": 5,
+  "reports_total": 5,
+  "final_decision": "...",
+  "error": null
+}
 ```
 
-When "Display full report?" appears:
-```bash
-tmux send-keys -t ta_run "N" Enter
+Format this into a Markdown report and write it to disk with the `Write` tool at `reports/{TICKER}_{TIMESTAMP}/complete_report.md` (e.g. `reports/NVDA_20260701-143000/complete_report.md`), mirroring the section layout `cli/main.py`'s `save_report_to_disk` uses:
+
+```markdown
+# Complete Analysis Report for {TICKER} ({TIMESTAMP})
+
+## I. Analyst Team Reports
+
+### Market Analyst
+{reports.market_report}
+
+### Sentiment Analyst
+{reports.sentiment_report}
+
+### News Analyst
+{reports.news_report}
+
+### Fundamentals Analyst
+{reports.fundamentals_report}
+
+### Quant Forecast Analyst
+{reports.quant_report}
+
+## II. Final Decision
+{final_decision}
 ```
+
+Omit any section whose report key is missing or empty.
 
 **6. Report back**
 
 Tell the user:
-- Final decision (look for `Final Investment Decision:` or `FINAL TRANSACTION PROPOSAL:` in the captured pane)
-- Total run time (bottom status bar `⏱ MM:SS`)
-- Save path printed after saving
+- Final decision — the `final_decision` field from the JSON fetched in Step 4/5
+- Total run time — the wall-clock time you (the calling agent) observed between submitting the job in Step 3 and it reaching `"done"` in Step 4 (note the time before submitting and again once polling stops, then report the difference)
+- Save path — the path you wrote the report to in Step 5
 
 ## Timeouts
 
-Each agent typically takes 30–90 seconds with gemma4:12b-hermes. Deep mode with all 4 analysts runs ~7–10 minutes end-to-end. Use a 15-minute poll timeout before declaring failure.
+Each agent typically takes 30–90 seconds with gemma4:12b-hermes. Deep mode with all 5 analysts (market, sentiment, news, fundamentals, quant) runs ~7–10 minutes end-to-end. Use a 15-minute poll timeout before declaring failure.
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---------|-----|
 | `GraphRecursionError` | Increase `TRADINGAGENTS_MAX_RECUR_LIMIT` in `.env` (currently 300) |
-| Prompt not advancing | Capture-pane and check what's on screen; resend the key |
-| Tmux session already exists | Kill it first: `tmux kill-session -t ta_run` |
+| `curl: (7) Failed to connect` | API isn't running — Step 2 should have started it; check `docker compose ps` |
+| Job stuck in `"running"` for a very long time | Check `docker compose logs tradingagents-api` for errors; deep mode can legitimately take 10+ minutes |
+| `status: "error"` in the poll response | Report the `error` field to the user directly — don't retry silently |
 | Ollama not running | `ollama serve` in a separate terminal |
