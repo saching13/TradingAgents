@@ -175,10 +175,29 @@ cp .env.example .env
 
 Launch the interactive CLI:
 ```bash
-tradingagents          # installed command
-python -m cli.main     # alternative: run directly from source
+tradingagents analyze          # installed command
+python -m cli.main analyze     # alternative: run directly from source
 ```
 You will see a screen where you can select your desired tickers, analysis date, LLM provider, research depth, and more.
+
+### HTTP API
+
+Run the API server instead of the interactive CLI:
+```bash
+tradingagents api --host 0.0.0.0 --port 8080
+# or via Docker:
+docker compose up tradingagents-api
+```
+
+Submit an analysis and poll for the result:
+```bash
+curl -X POST http://localhost:8080/analyze -H "Content-Type: application/json" \
+  -d '{"ticker": "NVDA", "depth": "deep"}'
+# => {"job_id": "..."}
+
+curl http://localhost:8080/analyze/<job_id>
+# => {"status": "running", "reports_completed": 2, "reports_total": 5, ...}
+```
 
 ### Markets and tickers
 
