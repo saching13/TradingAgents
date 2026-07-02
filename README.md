@@ -120,6 +120,11 @@ Install the package and its dependencies:
 pip install .
 ```
 
+> **Note (GPU users):** a plain install resolves `torch` from PyPI's default index, which may pick a CUDA build newer than your installed driver supports (e.g. a cu130-class wheel on a machine with a CUDA 12.8 driver), leaving `torch.cuda.is_available()` returning `False`. If that happens, reinstall torch from the CUDA 12.4 wheel index:
+> ```bash
+> pip install torch --index-url https://download.pytorch.org/whl/cu124 --force-reinstall
+> ```
+
 ### Docker
 
 Alternatively, run with Docker:
