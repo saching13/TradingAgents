@@ -14,14 +14,6 @@ from tradingagents.graph.trading_graph import TradingAgentsGraph
 app = FastAPI(title="TradingAgents API")
 _jobs = JobStore()
 
-REPORT_KEYS = [
-    "market_report",
-    "sentiment_report",
-    "news_report",
-    "fundamentals_report",
-    "quant_report",
-]
-
 DEFAULT_ANALYSTS = ("market", "social", "news", "fundamentals", "quant")
 
 # Mirrors cli/main.py's select_research_depth() DEPTH_OPTIONS mapping
