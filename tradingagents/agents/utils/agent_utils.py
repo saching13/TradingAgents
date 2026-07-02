@@ -22,6 +22,7 @@ from tradingagents.agents.utils.news_data_tools import (
     get_news,
 )
 from tradingagents.agents.utils.prediction_markets_tools import get_prediction_markets
+from tradingagents.agents.utils.kronos_tools import get_kronos_forecast
 from tradingagents.agents.utils.technical_indicators_tools import get_indicators
 
 # Public surface: the data tools are imported here so agents and the graph
@@ -29,6 +30,7 @@ from tradingagents.agents.utils.technical_indicators_tools import get_indicators
 __all__ = [
     "get_stock_data",
     "get_indicators",
+    "get_kronos_forecast",
     "get_fundamentals",
     "get_balance_sheet",
     "get_cashflow",

@@ -64,3 +64,29 @@ def test_get_kronos_forecast_direction_up(mock_load_ohlcv, mock_load_kronos):
     # _FakePredictor always predicts a rising close path from last_close
     assert result["direction"] == "up"
     assert result["pct_change_close"] > 0
+
+
+@patch("tradingagents.agents.utils.kronos_tools._get_kronos_forecast")
+def test_kronos_forecast_tool_formats_text(mock_forecast):
+    mock_forecast.return_value = {
+        "symbol": "NVDA",
+        "curr_date": "2026-06-30",
+        "pred_len": 2,
+        "predicted": [
+            {"date": "2026-07-01", "open": 101.0, "high": 102.0, "low": 100.0, "close": 101.5, "volume": 1000000},
+            {"date": "2026-07-02", "open": 102.0, "high": 103.0, "low": 101.0, "close": 102.5, "volume": 1000000},
+        ],
+        "pct_change_close": 1.5,
+        "direction": "up",
+        "path_high": 103.0,
+        "path_low": 100.0,
+    }
+
+    from tradingagents.agents.utils.kronos_tools import get_kronos_forecast as forecast_tool
+
+    text = forecast_tool.invoke({"symbol": "NVDA", "curr_date": "2026-06-30"})
+
+    assert "NVDA" in text
+    assert "2026-07-01" in text
+    assert "up" in text
+    assert "1.5" in text
