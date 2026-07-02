@@ -46,7 +46,11 @@ Every 10 seconds:
 curl -s http://localhost:8080/analyze/{JOB_ID}
 ```
 
-Report brief status updates to the user using `reports_completed`/`reports_total` from the response.
+Progress reporting is binary, not incremental: `reports_completed` stays
+`0` for the entire run and only jumps to the final count once `status`
+becomes `"done"`. Don't fabricate a fractional progress readout from it —
+just tell the user the analysis is "still running" on each poll, and
+mention the typical wait duration (see Timeouts below).
 
 Stop polling when `status` is `"done"` (success) or `"error"` (failure — report the `error` field to the user).
 
