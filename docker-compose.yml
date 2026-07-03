@@ -24,6 +24,9 @@ services:
     command: ["api", "--host", "0.0.0.0", "--port", "8090"]
     ports:
       - "127.0.0.1:8090:8090"
+    networks:
+      - default
+      - ai-stack_default
     volumes:
       - tradingagents_data:/home/appuser/.tradingagents
       - huggingface_cache:/home/appuser/.cache/huggingface
@@ -62,3 +65,13 @@ volumes:
   tradingagents_data:
   ollama_data:
   huggingface_cache:
+
+networks:
+  default: {}
+  # Shared network the host's Hermes agent (a separate Compose project,
+  # /home/sags/ai-stack/docker-compose.yml) runs on, so it can reach the
+  # API by container/service name. tradingagents-api still also publishes
+  # 127.0.0.1:8090 for host-side/loopback use (the Claude Code skill).
+  # No auth on this API — anything else on ai-stack_default can reach it too.
+  ai-stack_default:
+    external: true
