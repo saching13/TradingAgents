@@ -1361,7 +1361,7 @@ def api(
             "auth/network boundary) to expose it more broadly."
         ),
     ),
-    port: int = typer.Option(8080, "--port", help="Bind port for the HTTP API."),
+    port: int = typer.Option(8090, "--port", help="Bind port for the HTTP API."),
 ):
     """Run the TradingAgents HTTP API server (uvicorn)."""
     import uvicorn

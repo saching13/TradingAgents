@@ -25,15 +25,15 @@ If ticker not provided as args, ask the user for it with `AskUserQuestion` befor
 **2. Ensure the API is running**
 
 ```bash
-curl -sf http://localhost:8080/health || (cd /home/sags/Projects/TradingAgents && docker compose up -d tradingagents-api)
+curl -sf http://localhost:8090/health || (cd /home/sags/Projects/TradingAgents && docker compose up -d tradingagents-api)
 ```
 
-Wait until `curl -sf http://localhost:8080/health` returns `{"status":"ok"}` before proceeding.
+Wait until `curl -sf http://localhost:8090/health` returns `{"status":"ok"}` before proceeding.
 
 **3. Submit the analysis**
 
 ```bash
-curl -s -X POST http://localhost:8080/analyze -H "Content-Type: application/json" \
+curl -s -X POST http://localhost:8090/analyze -H "Content-Type: application/json" \
   -d '{"ticker": "{TICKER}", "depth": "{DEPTH}"}'
 ```
 
@@ -43,7 +43,7 @@ Extract `job_id` from the JSON response.
 
 Every 10 seconds:
 ```bash
-curl -s http://localhost:8080/analyze/{JOB_ID}
+curl -s http://localhost:8090/analyze/{JOB_ID}
 ```
 
 Progress reporting is binary, not incremental: `reports_completed` stays

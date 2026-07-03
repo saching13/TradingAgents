@@ -184,7 +184,7 @@ You will see a screen where you can select your desired tickers, analysis date, 
 
 Run the API server instead of the interactive CLI:
 ```bash
-tradingagents api --port 8080
+tradingagents api --port 8090
 # or via Docker:
 docker compose up tradingagents-api
 ```
@@ -197,11 +197,11 @@ own auth/network boundary if you do.
 
 Submit an analysis and poll for the result:
 ```bash
-curl -X POST http://localhost:8080/analyze -H "Content-Type: application/json" \
+curl -X POST http://localhost:8090/analyze -H "Content-Type: application/json" \
   -d '{"ticker": "NVDA", "depth": "deep"}'
 # => {"job_id": "..."}
 
-curl http://localhost:8080/analyze/<job_id>
+curl http://localhost:8090/analyze/<job_id>
 # => {"status": "running", "reports_completed": 0, "reports_total": 5, ...}
 ```
 

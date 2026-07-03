@@ -21,9 +21,9 @@ services:
     build: .
     env_file:
       - .env
-    command: ["api", "--host", "0.0.0.0", "--port", "8080"]
+    command: ["api", "--host", "0.0.0.0", "--port", "8090"]
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8090:8090"
     volumes:
       - tradingagents_data:/home/appuser/.tradingagents
       - huggingface_cache:/home/appuser/.cache/huggingface
